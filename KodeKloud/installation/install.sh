@@ -1,18 +1,30 @@
-#!/bin/bash -e
+#!/bin/bash
+## Install Kubernetes v1.28 on Ubuntu 22.04 LTS using kubeadm
 
-# Define Variables
+## Check if run as root
+if [ "$EUID" -eq 0 ]; then
+  echo Run this script as a regular user.
+fi
+
+## Define Variables
+# Restart services automatically instead of prompting the user
+sudo sed -i "s/#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
+
+# User Prompts
 read -p "This script will install Kubernetes v1.28 on Ubuntu 22.04 LTS. Press Enter to continue."
 read -p "Is this the master node? [y/n]: " IS_MASTER
 IS_MASTER=${IS_MASTER:-n}
 read -p "Have you set the correct hostname? [y/n] : " ISHOSTSET
-
 POD_SUBNET="172.16.0.0/16"
+
 read -p "The Pod CIDR is ${POD_SUBNET}. Press Enter to continue or c to change: " CHANGE
-if [ $CHANGE == 'c' ]; then
+if [ ! -z $CHANGE ]; then
   read -p "Enter the Pod CIDR to use with kubeadm: " POD_SUBNET
 fi
 
-# System Prerequisites
+# Update repos
+sudo apt update
+
 # Set hostname if it not set
 if [ $ISHOSTSET == 'n' ]; then
   read -p "Enter the hostname to set: " HOST
@@ -21,9 +33,12 @@ if [ $ISHOSTSET == 'n' ]; then
   sudo reboot
 fi
 
-echo Disable Swap Memory...
-sudo swapoff -a &> /dev/null
-sudo sed -i '/swap/d' /etc/fstab
+# Disable Swap if it exists
+if [ ! -z $(swapon -s) ]; then
+  echo Disable Swap Memory...
+  sudo swapoff -a &> /dev/null
+  sudo sed -i '/swap/d' /etc/fstab
+fi
 
 echo Forwarding IPv4 and letting iptables see bridged traffic...
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
@@ -73,6 +88,7 @@ sudo apt update
 sudo apt install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
+# Stop script if this is a worker node
 if [ ${IS_MASTER} == 'n' ]; then
   echo Now join the worker node to the cluster using the 'kubeadm join' command from the master node.
   exit 0
@@ -81,12 +97,13 @@ fi
 echo Initializing the control plane...
 sudo kubeadm init --pod-network-cidr=${POD_SUBNET} |& tee kubeadm.log
 
+# kubeconfig setup
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 echo Installing the Tigera Calico operator...
-sleep 10
+sleep 5
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
 
 # Download Calico Custom resource
