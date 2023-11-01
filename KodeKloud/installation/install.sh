@@ -16,8 +16,17 @@ fi
 
 ## Define Variables
 # User Prompts
-read -p "This script will install Kubernetes v1.28 on Ubuntu LTS. Press Enter to continue."
+read -p "This script will install Kubernetes v1.28 with Calico on Ubuntu LTS. Press Enter to continue."
 read -p "Have you set the correct hostname? [y/n] : " ISHOSTSET
+
+# Set hostname if it not set
+if [ $ISHOSTSET == 'n' ]; then
+  read -p "Enter the hostname to set: " HOST
+  sudo hostnamectl set-hostname ${HOST}
+  sudo sed -i "s/127.0.0.1 localhost/127.0.0.1 localhost ${HOST}/" /etc/hosts
+  sudo reboot
+fi
+
 read -p "Is this the master node? [y/n]: " IS_MASTER
 IS_MASTER=${IS_MASTER:-n}
 
@@ -38,14 +47,6 @@ fi
 
 # Update repos
 sudo apt update
-
-# Set hostname if it not set
-if [ $ISHOSTSET == 'n' ]; then
-  read -p "Enter the hostname to set: " HOST
-  sudo hostnamectl set-hostname ${HOST}
-  sudo sed -i "s/127.0.0.1 localhost/127.0.0.1 localhost ${HOST}/" /etc/hosts
-  sudo reboot
-fi
 
 # Disable Swap if it exists
 if [ ! -z $(swapon -s) ]; then
