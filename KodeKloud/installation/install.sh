@@ -1,25 +1,39 @@
 #!/bin/bash
 ## Install Kubernetes v1.28 on Ubuntu 22.04 LTS using kubeadm
 
-## Check if run as root
+## Check if not run as root
 if [ "$EUID" -eq 0 ]; then
   echo Run this script as a regular user.
+  exit 1
+fi
+
+## Check if it is Ubuntu
+source /etc/os-release
+if [ "$ID" != "ubuntu" ]; then
+  echo This script should be run on Ubuntu.
+  exit 1
 fi
 
 ## Define Variables
-# Restart services automatically instead of prompting the user
-sudo sed -i "s/#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
-
 # User Prompts
 read -p "This script will install Kubernetes v1.28 on Ubuntu 22.04 LTS. Press Enter to continue."
+read -p "Have you set the correct hostname? [y/n] : " ISHOSTSET
 read -p "Is this the master node? [y/n]: " IS_MASTER
 IS_MASTER=${IS_MASTER:-n}
-read -p "Have you set the correct hostname? [y/n] : " ISHOSTSET
-POD_SUBNET="172.16.0.0/16"
 
-read -p "The Pod CIDR is ${POD_SUBNET}. Press Enter to continue or c to change: " CHANGE
-if [ ! -z $CHANGE ]; then
-  read -p "Enter the Pod CIDR to use with kubeadm: " POD_SUBNET
+# Update the Pod Subnet if the user wants to, for the master node
+if [ ${IS_MASTER} == 'y' ]; then
+  POD_SUBNET="172.16.0.0/16"
+  read -p "The Pod CIDR is ${POD_SUBNET}. Press Enter to continue or c to change: " CHANGE
+  if [ ! -z $CHANGE ]; then
+    read -p "Enter the Pod CIDR to use with kubeadm: " POD_SUBNET
+  fi
+fi
+
+# Restart services automatically instead of prompting the user
+if [ "$UBUNTU_CODENAME" == "jammy" ]; then
+  echo setting NEEDRESTART to auto...
+  sudo sed -i "s/#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf
 fi
 
 # Update repos
