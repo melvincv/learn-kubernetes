@@ -127,16 +127,12 @@ create_user
 # Disable password authentication for ssh
 # sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 
-# Get instance IP from Default Route
-IP_ADDRESS=$(ip route | grep -i default | awk -F ' ' '{print $3}')
-
 # Get Public IP
 PUBLIC_IP=$(curl -fsSL https://www.icanhazip.com/)
 
 # Display the password
 echo ---------------------------------------------------------------------------
 echo Login using this command: ssh -i 'PRIVATE_KEY_PATH' ${USER_NAME}@${PUBLIC_IP}
-echo Private IP: ${IP_ADDRESS}
 echo Your user name is: ${USER_NAME}
 echo Your password is: ${RANDPASS}
 echo ***Please change your password on first login***
