@@ -1,5 +1,5 @@
 #!/bin/bash
-## Install Kubernetes v1.28 on Ubuntu 22.04 LTS using kubeadm
+## Install Kubernetes v1.28 on Ubuntu LTS using kubeadm
 
 ## Check if not run as root
 if [ "$EUID" -eq 0 ]; then
@@ -16,7 +16,7 @@ fi
 
 ## Define Variables
 # User Prompts
-read -p "This script will install Kubernetes v1.28 on Ubuntu 22.04 LTS. Press Enter to continue."
+read -p "This script will install Kubernetes v1.28 on Ubuntu LTS. Press Enter to continue."
 read -p "Have you set the correct hostname? [y/n] : " ISHOSTSET
 read -p "Is this the master node? [y/n]: " IS_MASTER
 IS_MASTER=${IS_MASTER:-n}
@@ -130,14 +130,12 @@ echo Installing Calico...
 sleep 5
 kubectl create -f custom-resources.yaml
 
-echo Setting alias for kubectl...
-alias k='kubectl'
-echo "alias k='kubectl'" >> ~/.bashrc
-
 echo Installing Bash completion...
-echo "source /usr/share/bash-completion/bash_completion" >> ~/.bashrc
-kubectl completion bash > ~/.kubectl-completion.bash
-echo "source ~/.kubectl-completion.bash" >> ~/.bashrc
+kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null
+sudo chmod a+r /etc/bash_completion.d/kubectl
+echo 'alias k=kubectl' >>~/.bashrc
+echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
+source ~/.bashrc
 
 # Display the join command for the worker nodes
 tail -4 kubeadm.log
