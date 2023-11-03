@@ -77,6 +77,10 @@ do
   fi
 done
 
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
 # Put PS3 back to what it was
 PS3=$oPS3
 
