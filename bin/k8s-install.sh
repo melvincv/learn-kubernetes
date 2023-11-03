@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash
 ## Install Kubernetes v1.28 on Ubuntu LTS using kubeadm
 ## Call Libraries
 . ./multi-k8s-install.lib
