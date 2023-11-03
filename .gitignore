@@ -35,3 +35,5 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+bin/k8s-install-trace.log
