@@ -15,5 +15,5 @@ resource "digitalocean_droplet" "k8s-nodes" {
   size   = "s-2vcpu-4gb"
   ssh_keys = ["39828591", "39828597"]
   tags = ["k8s-node"]
-  count = 1
+  count = 2
 }
