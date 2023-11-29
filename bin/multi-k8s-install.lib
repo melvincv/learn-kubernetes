@@ -31,7 +31,6 @@ disableswap () {
 
 updatepodsubnet () {
     if [ ${IS_MASTER} == 'y' ]; then
-        POD_SUBNET="172.16.0.0/16"
         read -p "The Pod CIDR is ${POD_SUBNET}. Press Enter to continue or c to change: " CHANGE
         if [ ! -z $CHANGE ]; then
             read -p "Enter the Pod CIDR to use with kubeadm: " POD_SUBNET

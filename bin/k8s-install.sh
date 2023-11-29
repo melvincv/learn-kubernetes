@@ -1,5 +1,8 @@
-#!/bin/bash
-## Install Kubernetes v1.28 on Ubuntu LTS using kubeadm
+#!/bin/bash -e
+## Interactive Script: Install Kubernetes v1.28 on Ubuntu LTS using kubeadm
+## Define Variables
+POD_SUBNET="172.16.0.0/16"
+
 ## Call Libraries
 . ./multi-k8s-install.lib
 
@@ -121,4 +124,5 @@ source ~/.bashrc
 
 # Display the join command for the worker nodes
 tail -4 kubeadm.log
+echo The installation log has been saved as kubeadm.log in the current directory.
 exit 0
