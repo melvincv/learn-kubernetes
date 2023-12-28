@@ -1,14 +1,23 @@
-#!/bin/bash
 # BASH Library File
 
 # Define Functions
 sethostname () {
-    # Set hostname if it not set
-    if [ $ISHOSTSET == 'n' ]; then
     read -p "Enter the hostname to set: " HOST
     sudo hostnamectl set-hostname ${HOST}
     sudo sed -i "s/127.0.0.1 localhost/127.0.0.1 localhost ${HOST}/" /etc/hosts
     sudo reboot
+}
+
+masterhaprompt () {
+    if [ ${IS_MASTER} == "y" ]; then
+        read -p "High Availability for the master node? [y/n]: " HA_MASTER
+        # Default Option: n
+        HA_MASTER=${HA_MASTER:-n}
+
+        if [ ${HA_MASTER} == "y" ]; then
+            read -p "Enter the DNS name of the Load Balancer: " LOAD_BALANCER_DNS
+            read -p "Enter the Port of the Load Balancer: " LOAD_BALANCER_PORT
+        fi
     fi
 }
 
@@ -39,6 +48,7 @@ updatepodsubnet () {
 }
 
 kernelparamsetup () {
+echo
 echo Forwarding IPv4 and letting iptables see bridged traffic...
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
@@ -58,28 +68,35 @@ EOF
 
 installcontainerd () {
     # Install containerd
+    echo
     echo Installing dependencies...
     sudo apt update
     sudo apt install -y ca-certificates curl gnupg bash-completion
     sudo install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
     sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
+    echo
     echo Adding the Docker repository...
     echo \
     "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
     "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt update
-
+    echo
     echo Installing containerd...
     sudo apt install -y containerd.io
 
     # Configuring containerd for Kubernetes...
+    echo
     echo Configuring containerd for Kubernetes...
     sudo su -c 'containerd config default > /etc/containerd/config.toml'
     sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
     sudo systemctl restart containerd
+}
+
+installk8s-129 () {
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 }
 
 installk8s-128 () {
@@ -88,8 +105,8 @@ installk8s-128 () {
 }
 
 installk8s-127 () {
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg    # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list    sudo apt update
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.27/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.27/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 }
 
 installk8s-126 () {
