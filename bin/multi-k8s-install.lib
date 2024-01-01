@@ -154,7 +154,7 @@ calico-dl () {
         echo
         echo Retry $t
       fi
-      curl -fsSO https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
+      curl -fsSO https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/custom-resources.yaml
       i=$?
       let t=$t+1
       sleep 1
