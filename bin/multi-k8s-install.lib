@@ -1,3 +1,4 @@
+#!/bin/bash
 # BASH Library File
 
 # Define Functions
@@ -112,4 +113,56 @@ installk8s-127 () {
 installk8s-126 () {
     curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.26/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
     echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.26/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+}
+
+tigeraop-dl () {
+  # while loop to ensure that the manifests get downloaded without error
+  # no. of retries
+  RETRY=10
+  i=1
+  t=0
+  while [ $i -ne 0 ]
+  do
+    if [ $t -le $RETRY ]; then
+      if [ $t -ne 0 ]; then
+        echo
+        echo Retry $t
+      fi
+      curl -fsSO https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
+      i=$?
+      let t=$t+1
+      sleep 1
+    fi
+    if [ $t -gt $RETRY ]; then
+      echo "Failed to download the Tigera Calico operator. Exiting..." &>2
+      exit 1
+    fi
+    echo ---
+  done
+}
+
+calico-dl () {
+  # while loop to ensure that the manifests get downloaded without error
+  # no. of retries
+  RETRY=10
+  i=1
+  t=0
+  while [ $i -ne 0 ]
+  do
+    if [ $t -le $RETRY ]; then
+      if [ $t -ne 0 ]; then
+        echo
+        echo Retry $t
+      fi
+      curl -fsSO https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
+      i=$?
+      let t=$t+1
+      sleep 1
+    fi
+    if [ $t -gt $RETRY ]; then
+      echo "Failed to download Calico. Exiting..." &>2
+      exit 1
+    fi
+    echo ---
+  done
 }

@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 ## Interactive Script: Install (last 4 minor versions of) Kubernetes on Ubuntu LTS using kubeadm
 
 ## Call Libraries
@@ -81,6 +81,7 @@ sudo sysctl --system
 installcontainerd
 
 # Installing kubelet, kubeadm and kubectl...
+echo
 echo Installing kubelet, kubeadm and kubectl...
 
 # In releases older than Debian 12 and Ubuntu 22.04, /etc/apt/keyrings does not exist by default
@@ -126,19 +127,27 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ### Install Calico CNI ########################################################################################
 echo
+echo Downloading the Tigera Calico operator...
+# Function to download the manifest in a loop till successful
+tigeraop-dl
+
+echo
 echo Installing the Tigera Calico operator...
-sleep 5
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
+sleep 1
+kubectl create -f tigera-operator.yaml
 
-# Download Calico Custom resource
-curl -O --ssl https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/custom-resources.yaml
+echo
+echo Downloading Calico...
+# Function to download the manifest in a loop till successful
+calico-dl
 
-# Before creating this manifest, read its contents and make sure its settings are correct for your environment. For example, you may need to change the default IP pool CIDR to match your pod network CIDR.
+# Before creating this manifest, read its contents and make sure its settings are correct for your environment. 
+# For example, you may need to change the default IP pool CIDR to match your pod network CIDR.
 sed -i "s|cidr: 192.168.0.0/16|cidr: ${POD_SUBNET}|g" custom-resources.yaml
 
 echo
 echo Installing Calico...
-sleep 5
+sleep 1
 kubectl create -f custom-resources.yaml
 ### End Install Calico CNI ########################################################################################
 

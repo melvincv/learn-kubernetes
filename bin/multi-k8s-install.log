@@ -1,0 +1,430 @@
+melvin@kube-control-plane-1:~$ ./k8s-install.sh
+If you need HA for the control plane, create a Load Balancer and get it's DNS name and port.
+This script will install Kubernetes with Calico on Ubuntu LTS. Press Enter to continue.
+Have you set the correct hostname? [y/n] : y
+*** Kubernetes Version List ***
+1) 1.29
+2) 1.28
+3) 1.27
+4) 1.26
+---
+Select your Kubernetes Version [1-4] : 1
+Is this the master node? [y/n]: y
+High Availability for the master node? [y/n]: n
+The Pod CIDR is 172.16.0.0/16. Press Enter to continue or c to change:
+setting NEEDRESTART to auto...
+[sudo] password for melvin:
+Hit:1 http://mirrors.digitalocean.com/ubuntu jammy InRelease
+Hit:2 http://mirrors.digitalocean.com/ubuntu jammy-updates InRelease
+Hit:3 https://repos-droplet.digitalocean.com/apt/droplet-agent main InRelease
+Hit:4 http://mirrors.digitalocean.com/ubuntu jammy-backports InRelease
+Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+157 packages can be upgraded. Run 'apt list --upgradable' to see them.
+
+Forwarding IPv4 and letting iptables see bridged traffic...
+overlay
+br_netfilter
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+* Applying /etc/sysctl.d/10-console-messages.conf ...
+kernel.printk = 4 4 1 7
+* Applying /etc/sysctl.d/10-ipv6-privacy.conf ...
+net.ipv6.conf.all.use_tempaddr = 2
+net.ipv6.conf.default.use_tempaddr = 2
+* Applying /etc/sysctl.d/10-kernel-hardening.conf ...
+kernel.kptr_restrict = 1
+* Applying /etc/sysctl.d/10-magic-sysrq.conf ...
+kernel.sysrq = 176
+* Applying /etc/sysctl.d/10-network-security.conf ...
+net.ipv4.conf.default.rp_filter = 2
+net.ipv4.conf.all.rp_filter = 2
+* Applying /etc/sysctl.d/10-ptrace.conf ...
+kernel.yama.ptrace_scope = 1
+* Applying /etc/sysctl.d/10-zeropage.conf ...
+vm.mmap_min_addr = 65536
+* Applying /usr/lib/sysctl.d/50-default.conf ...
+kernel.core_uses_pid = 1
+net.ipv4.conf.default.rp_filter = 2
+net.ipv4.conf.default.accept_source_route = 0
+sysctl: setting key "net.ipv4.conf.all.accept_source_route": Invalid argument
+net.ipv4.conf.default.promote_secondaries = 1
+sysctl: setting key "net.ipv4.conf.all.promote_secondaries": Invalid argument
+net.ipv4.ping_group_range = 0 2147483647
+net.core.default_qdisc = fq_codel
+fs.protected_hardlinks = 1
+fs.protected_symlinks = 1
+fs.protected_regular = 1
+fs.protected_fifos = 1
+* Applying /usr/lib/sysctl.d/50-pid-max.conf ...
+kernel.pid_max = 4194304
+* Applying /etc/sysctl.d/99-cloudimg-ipv6.conf ...
+net.ipv6.conf.all.use_tempaddr = 0
+net.ipv6.conf.default.use_tempaddr = 0
+* Applying /usr/lib/sysctl.d/99-protect-links.conf ...
+fs.protected_fifos = 1
+fs.protected_hardlinks = 1
+fs.protected_regular = 2
+fs.protected_symlinks = 1
+* Applying /etc/sysctl.d/99-sysctl.conf ...
+* Applying /etc/sysctl.d/k8s.conf ...
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward = 1
+* Applying /etc/sysctl.conf ...
+
+Installing dependencies...
+Hit:1 http://mirrors.digitalocean.com/ubuntu jammy InRelease
+Hit:2 http://mirrors.digitalocean.com/ubuntu jammy-updates InRelease
+Hit:3 https://repos-droplet.digitalocean.com/apt/droplet-agent main InRelease
+Hit:4 http://mirrors.digitalocean.com/ubuntu jammy-backports InRelease
+Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+157 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+bash-completion is already the newest version (1:2.11-5ubuntu1).
+bash-completion set to manually installed.
+ca-certificates is already the newest version (20230311ubuntu0.22.04.1).
+gnupg is already the newest version (2.2.27-3ubuntu2.1).
+gnupg set to manually installed.
+The following additional packages will be installed:
+  libcurl4
+The following packages will be upgraded:
+  curl libcurl4
+2 upgraded, 0 newly installed, 0 to remove and 155 not upgraded.
+Need to get 483 kB of archives.
+After this operation, 4096 B of additional disk space will be used.
+Get:1 http://mirrors.digitalocean.com/ubuntu jammy-updates/main amd64 curl amd64 7.81.0-1ubuntu1.15 [194 kB]
+Get:2 http://mirrors.digitalocean.com/ubuntu jammy-updates/main amd64 libcurl4 amd64 7.81.0-1ubuntu1.15 [289 kB]
+Fetched 483 kB in 0s (5660 kB/s)
+(Reading database ... 64222 files and directories currently installed.)
+Preparing to unpack .../curl_7.81.0-1ubuntu1.15_amd64.deb ...
+Unpacking curl (7.81.0-1ubuntu1.15) over (7.81.0-1ubuntu1.8) ...
+Preparing to unpack .../libcurl4_7.81.0-1ubuntu1.15_amd64.deb ...
+Unpacking libcurl4:amd64 (7.81.0-1ubuntu1.15) over (7.81.0-1ubuntu1.8) ...
+Setting up libcurl4:amd64 (7.81.0-1ubuntu1.15) ...
+Setting up curl (7.81.0-1ubuntu1.15) ...
+Processing triggers for man-db (2.10.2-1) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.1) ...
+Scanning processes...
+Scanning candidates...
+Scanning linux images...
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+ systemctl restart packagekit.service
+
+Service restarts being deferred:
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+
+Adding the Docker repository...
+Hit:1 http://mirrors.digitalocean.com/ubuntu jammy InRelease
+Hit:2 http://mirrors.digitalocean.com/ubuntu jammy-updates InRelease
+Hit:3 http://mirrors.digitalocean.com/ubuntu jammy-backports InRelease
+Hit:4 https://repos-droplet.digitalocean.com/apt/droplet-agent main InRelease
+Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Get:6 https://download.docker.com/linux/ubuntu jammy InRelease [48.8 kB]
+Get:7 https://download.docker.com/linux/ubuntu jammy/stable amd64 Packages [23.0 kB]
+Fetched 71.8 kB in 1s (67.1 kB/s)
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+155 packages can be upgraded. Run 'apt list --upgradable' to see them.
+
+Installing containerd...
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  containerd.io
+0 upgraded, 1 newly installed, 0 to remove and 155 not upgraded.
+Need to get 29.5 MB of archives.
+After this operation, 118 MB of additional disk space will be used.
+Get:1 https://download.docker.com/linux/ubuntu jammy/stable amd64 containerd.io amd64 1.6.26-1 [29.5 MB]
+Fetched 29.5 MB in 3s (9872 kB/s)
+Selecting previously unselected package containerd.io.
+(Reading database ... 64222 files and directories currently installed.)
+Preparing to unpack .../containerd.io_1.6.26-1_amd64.deb ...
+Unpacking containerd.io (1.6.26-1) ...
+Setting up containerd.io (1.6.26-1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /lib/systemd/system/containerd.service.
+Processing triggers for man-db (2.10.2-1) ...
+Scanning processes...
+Scanning candidates...
+Scanning linux images...
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+
+Service restarts being deferred:
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+
+Configuring containerd for Kubernetes...
+Installing kubelet, kubeadm and kubectl...
+deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
+Hit:1 http://mirrors.digitalocean.com/ubuntu jammy InRelease
+Hit:2 http://mirrors.digitalocean.com/ubuntu jammy-updates InRelease
+Hit:3 http://mirrors.digitalocean.com/ubuntu jammy-backports InRelease
+Hit:4 https://repos-droplet.digitalocean.com/apt/droplet-agent main InRelease
+Hit:6 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:7 https://download.docker.com/linux/ubuntu jammy InRelease
+Get:5 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  InRelease [1186 B]
+Get:8 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  Packages [2759 B]
+Fetched 3945 B in 1s (3779 B/s)
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+155 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  conntrack cri-tools ebtables kubernetes-cni socat
+The following NEW packages will be installed:
+  conntrack cri-tools ebtables kubeadm kubectl kubelet kubernetes-cni socat
+0 upgraded, 8 newly installed, 0 to remove and 155 not upgraded.
+Need to get 92.4 MB of archives.
+After this operation, 346 MB of additional disk space will be used.
+Get:1 http://mirrors.digitalocean.com/ubuntu jammy/main amd64 conntrack amd64 1:1.4.6-2build2 [33.5 kB]
+Get:2 http://mirrors.digitalocean.com/ubuntu jammy/main amd64 ebtables amd64 2.0.11-4build2 [84.9 kB]
+Get:3 http://mirrors.digitalocean.com/ubuntu jammy/main amd64 socat amd64 1.7.4.1-3ubuntu4 [349 kB]
+Get:4 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  cri-tools 1.29.0-1.1 [20.1 MB]
+Get:5 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  kubernetes-cni 1.3.0-1.1 [31.4 MB]
+Get:6 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  kubelet 1.29.0-1.1 [19.8 MB]
+Get:7 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  kubectl 1.29.0-1.1 [10.5 MB]
+Get:8 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.29/deb  kubeadm 1.29.0-1.1 [10.1 MB]
+Fetched 92.4 MB in 6s (15.7 MB/s)
+Selecting previously unselected package conntrack.
+(Reading database ... 64238 files and directories currently installed.)
+Preparing to unpack .../0-conntrack_1%3a1.4.6-2build2_amd64.deb ...
+Unpacking conntrack (1:1.4.6-2build2) ...
+Selecting previously unselected package cri-tools.
+Preparing to unpack .../1-cri-tools_1.29.0-1.1_amd64.deb ...
+Unpacking cri-tools (1.29.0-1.1) ...
+Selecting previously unselected package ebtables.
+Preparing to unpack .../2-ebtables_2.0.11-4build2_amd64.deb ...
+Unpacking ebtables (2.0.11-4build2) ...
+Selecting previously unselected package kubernetes-cni.
+Preparing to unpack .../3-kubernetes-cni_1.3.0-1.1_amd64.deb ...
+Unpacking kubernetes-cni (1.3.0-1.1) ...
+Selecting previously unselected package socat.
+Preparing to unpack .../4-socat_1.7.4.1-3ubuntu4_amd64.deb ...
+Unpacking socat (1.7.4.1-3ubuntu4) ...
+Selecting previously unselected package kubelet.
+Preparing to unpack .../5-kubelet_1.29.0-1.1_amd64.deb ...
+Unpacking kubelet (1.29.0-1.1) ...
+Selecting previously unselected package kubectl.
+Preparing to unpack .../6-kubectl_1.29.0-1.1_amd64.deb ...
+Unpacking kubectl (1.29.0-1.1) ...
+Selecting previously unselected package kubeadm.
+Preparing to unpack .../7-kubeadm_1.29.0-1.1_amd64.deb ...
+Unpacking kubeadm (1.29.0-1.1) ...
+Setting up conntrack (1:1.4.6-2build2) ...
+Setting up kubectl (1.29.0-1.1) ...
+Setting up ebtables (2.0.11-4build2) ...
+Setting up socat (1.7.4.1-3ubuntu4) ...
+Setting up cri-tools (1.29.0-1.1) ...
+Setting up kubernetes-cni (1.3.0-1.1) ...
+Setting up kubelet (1.29.0-1.1) ...
+Setting up kubeadm (1.29.0-1.1) ...
+Processing triggers for man-db (2.10.2-1) ...
+Scanning processes...
+Scanning candidates...
+Scanning linux images...
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+
+Service restarts being deferred:
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+kubelet set on hold.
+kubeadm set on hold.
+kubectl set on hold.
+
+Initializing the control plane...
+[init] Using Kubernetes version: v1.29.0
+[preflight] Running pre-flight checks
+[preflight] Pulling images required for setting up a Kubernetes cluster
+[preflight] This might take a minute or two, depending on the speed of your internet connection
+[preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+W1228 11:43:23.698050   11164 checks.go:835] detected that the sandbox image "registry.k8s.io/pause:3.6" of the container runtime is inconsistent with that used by kubeadm. It is recommended that using "registry.k8s.io/pause:3.9" as the CRI sandbox image.
+[certs] Using certificateDir folder "/etc/kubernetes/pki"
+[certs] Generating "ca" certificate and key
+[certs] Generating "apiserver" certificate and key
+[certs] apiserver serving cert is signed for DNS names [kube-control-plane-1 kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 146.190.84.227]
+[certs] Generating "apiserver-kubelet-client" certificate and key
+[certs] Generating "front-proxy-ca" certificate and key
+[certs] Generating "front-proxy-client" certificate and key
+[certs] Generating "etcd/ca" certificate and key
+[certs] Generating "etcd/server" certificate and key
+[certs] etcd/server serving cert is signed for DNS names [kube-control-plane-1 localhost] and IPs [146.190.84.227 127.0.0.1 ::1]
+[certs] Generating "etcd/peer" certificate and key
+[certs] etcd/peer serving cert is signed for DNS names [kube-control-plane-1 localhost] and IPs [146.190.84.227 127.0.0.1 ::1]
+[certs] Generating "etcd/healthcheck-client" certificate and key
+[certs] Generating "apiserver-etcd-client" certificate and key
+[certs] Generating "sa" key and public key
+[kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+[kubeconfig] Writing "admin.conf" kubeconfig file
+[kubeconfig] Writing "super-admin.conf" kubeconfig file
+[kubeconfig] Writing "kubelet.conf" kubeconfig file
+[kubeconfig] Writing "controller-manager.conf" kubeconfig file
+[kubeconfig] Writing "scheduler.conf" kubeconfig file
+[etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+[control-plane] Using manifest folder "/etc/kubernetes/manifests"
+[control-plane] Creating static Pod manifest for "kube-apiserver"
+[control-plane] Creating static Pod manifest for "kube-controller-manager"
+[control-plane] Creating static Pod manifest for "kube-scheduler"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Starting the kubelet
+[wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests". This can take up to 4m0s
+[apiclient] All control plane components are healthy after 8.002771 seconds
+[upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+[kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
+[upload-certs] Skipping phase. Please see --upload-certs
+[mark-control-plane] Marking the node kube-control-plane-1 as control-plane by adding the labels: [node-role.kubernetes.io/control-plane node.kubernetes.io/exclude-from-external-load-balancers]
+[mark-control-plane] Marking the node kube-control-plane-1 as control-plane by adding the taints [node-role.kubernetes.io/control-plane:NoSchedule]
+[bootstrap-token] Using token: lwi7qp.6t12xaynghkisiij
+[bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
+[bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+[bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+[bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+[bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+[addons] Applied essential addon: CoreDNS
+[addons] Applied essential addon: kube-proxy
+
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 146.190.84.227:6443 --token lwi7qp.6t12xaynghkisiij \
+        --discovery-token-ca-cert-hash sha256:c5c0a370531bf5d0a74d85cf88ba0cc2954469c3322b690b77b7b867a8bcfbb4
+
+Installing the Tigera Calico operator...
+namespace/tigera-operator created
+customresourcedefinition.apiextensions.k8s.io/bgpconfigurations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/bgpfilters.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/bgppeers.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/blockaffinities.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/caliconodestatuses.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/clusterinformations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/felixconfigurations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/globalnetworkpolicies.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/globalnetworksets.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/hostendpoints.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipamblocks.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipamconfigs.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipamhandles.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ippools.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/ipreservations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/kubecontrollersconfigurations.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/networkpolicies.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/networksets.crd.projectcalico.org created
+customresourcedefinition.apiextensions.k8s.io/apiservers.operator.tigera.io created
+customresourcedefinition.apiextensions.k8s.io/imagesets.operator.tigera.io created
+customresourcedefinition.apiextensions.k8s.io/installations.operator.tigera.io created
+customresourcedefinition.apiextensions.k8s.io/tigerastatuses.operator.tigera.io created
+serviceaccount/tigera-operator created
+clusterrole.rbac.authorization.k8s.io/tigera-operator created
+clusterrolebinding.rbac.authorization.k8s.io/tigera-operator created
+deployment.apps/tigera-operator created
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   824  100   824    0     0   1835      0 --:--:-- --:--:-- --:--:--  1835
+
+Installing Calico...
+installation.operator.tigera.io/default created
+apiserver.operator.tigera.io/default created
+
+Installing Bash completion...
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 146.190.84.227:6443 --token lwi7qp.6t12xaynghkisiij \
+        --discovery-token-ca-cert-hash sha256:c5c0a370531bf5d0a74d85cf88ba0cc2954469c3322b690b77b7b867a8bcfbb4
+The installation log has been saved as kubeadm.log in the current directory.
+melvin@kube-control-plane-1:~$ exit
+logout
+Connection to 146.190.84.227 closed.
+
+melro@MELZ-PC MINGW64 ~
+$ ssh melvin@146.190.84.227
+Welcome to Ubuntu 22.04.2 LTS (GNU/Linux 5.15.0-67-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Thu Dec 28 11:45:57 UTC 2023
+
+  System load:  1.1240234375      Users logged in:       0
+  Usage of /:   7.6% of 57.97GB   IPv4 address for eth0: 146.190.84.227
+  Memory usage: 51%               IPv4 address for eth0: 10.15.0.5
+  Swap usage:   0%                IPv4 address for eth1: 10.104.0.2
+  Processes:    198
+
+Expanded Security Maintenance for Applications is not enabled.
+
+17 updates can be applied immediately.
+13 of these updates are standard security updates.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+The list of available updates is more than a week old.
+To check for new updates run: sudo apt update
+
+Last login: Thu Dec 28 11:39:29 2023 from 49.37.227.163
+melvin@kube-control-plane-1:~$ k get nodes
+NAME                   STATUS     ROLES           AGE     VERSION
+kube-control-plane-1   Ready      control-plane   2m21s   v1.29.0
+kube-node-1            NotReady   <none>          15s     v1.29.0
+melvin@kube-control-plane-1:~$ k get nodes
+NAME                   STATUS   ROLES           AGE     VERSION
+kube-control-plane-1   Ready    control-plane   2m40s   v1.29.0
+kube-node-1            Ready    <none>          34s     v1.29.0
