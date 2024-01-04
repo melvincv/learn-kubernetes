@@ -129,7 +129,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 echo
 echo Downloading the Tigera Calico operator...
 # Function to download the manifest in a loop till successful
-tigeraop-dl
+calico-dl "https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml"
 
 echo
 echo Installing the Tigera Calico operator...
@@ -139,7 +139,7 @@ kubectl create -f tigera-operator.yaml
 echo
 echo Downloading Calico...
 # Function to download the manifest in a loop till successful
-calico-dl
+calico-dl "https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/custom-resources.yaml"
 
 # Before creating this manifest, read its contents and make sure its settings are correct for your environment. 
 # For example, you may need to change the default IP pool CIDR to match your pod network CIDR.
