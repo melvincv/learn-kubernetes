@@ -32,11 +32,11 @@ needrestart () {
 
 disableswap () {
     # Disable Swap if it exists
-    if [ ! -z $(swapon -s) ]; then
+    # if [ ! -z $(swapon -s) ]; then
     echo Disable Swap Memory...
     sudo swapoff -a &> /dev/null
     sudo sed -i '/swap/d' /etc/fstab
-    fi
+    # fi
 }
 
 updatepodsubnet () {
