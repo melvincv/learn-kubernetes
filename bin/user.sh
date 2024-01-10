@@ -17,9 +17,7 @@ create_user () {
 	useradd -c "${COMMENT}" -s /bin/bash -m ${USER_NAME}
 
 	# Create a random 16 char password.
-	PASSWORD=$(date +%s%N${RANDOM}${RANDOM} | sha256sum | head -c14)
-	SPECIAL_CHARACTERS=$(echo '!@#$%^&*()_-+=' | fold -w2 | shuf | head -c2)
-	RANDPASS="${PASSWORD}${SPECIAL_CHARACTERS}"
+	RANDPASS=$(tr -dc 'A-Za-z0-9!?%=' < /dev/urandom | head -c 16)
 
 	# Set the password for the user.
 	# Eg: echo "${USER_NAME}:${PASSWORD}" | chpasswd
